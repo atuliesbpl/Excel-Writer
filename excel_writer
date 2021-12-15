@@ -1,0 +1,22 @@
+# Put multiple dataframes across separate tabs/sheets
+directoryPath='path'
+files = []
+for file_name in glob.glob(directoryPath+'*.csv'):    
+    files.append(file_name)
+print('files',files)
+# function
+def dfs_tabs(df_list, sheet_list, file_name):
+    writer = pd.ExcelWriter(file_name,engine='xlsxwriter')   
+    for dataframe, sheet in zip(df_list, sheet_list):
+        dataframe.to_excel(writer, sheet_name=sheet, startrow=0 , startcol=0)   
+    writer.save()
+
+# list of dataframes and sheet names
+dfs = []
+for idx,data in enumerate(files):
+    df = pd.read_csv(data)
+    dfs.append(df)
+sheets = list(range(0, len(files))) # storing no. is list
+sheets = [str(i) for i in sheets] # Converting no. in string
+# run function
+dfs_tabs(dfs, sheets, 'combined_excel.xlsx')
